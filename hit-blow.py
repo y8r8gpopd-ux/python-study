@@ -1,12 +1,18 @@
-# モジュールのインポート
+# # モジュールのインポート
 import random
 import tkinter as tk
 
 root = tk.Tk()
 root.geometry("400x150")
 root.title("ヒット＆ブロー")
-root.mainloop()
 
+label_1 = tk.Label(root, text="4桁の数字を入力してね")
+label_1.place(x = 20, y = 20)
+
+input_box = tk.Entry(width = 4)
+input_box.place(x = 160, y = 20)
+
+root.mainloop()
 
 # 4桁の数字のランダム生成
 a = []
@@ -71,4 +77,4 @@ while True:
   # hitが4ならゲーム終了
   if hit == 4:
     print ("おめでとう！")
-  break
+    break
