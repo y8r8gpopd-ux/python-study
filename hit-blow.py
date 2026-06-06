@@ -1,37 +1,21 @@
-# # モジュールのインポート
+# モジュールのインポート
 import random
 import tkinter as tk
+import tkinter.messagebox as tkm
 
-root = tk.Tk()
-root.geometry("400x150")
-root.title("ヒット＆ブロー")
 
-label_1 = tk.Label(root, text="4桁の数字を入力してね")
-label_1.place(x = 20, y = 20)
-
-input_box = tk.Entry(width = 4)
-input_box.place(x = 160, y = 20)
-
-root.mainloop()
-
-# 4桁の数字のランダム生成
-a = []
-for i in range(4):
-  a.append(random.randint(0, 9))
-
-# print(a)
-
-# ゲーム部分
-while True:
-
+# ボタンが押された時の処理
+def ButtonClick():
+  b = input_box.get()
+  
+  # ゲーム部分
   # 正しく入力してもらうまでループ
   check_4 = False
 
   # check_4というフラグで「4桁」かチェック
   while check_4 == False:
-    b = input("4桁の数字を入力してね＞")
     if len(b) != 4:
-      print("「4桁」の数字を入力してください！")
+      tkm.showinfo("無効", "「4桁」の数字を入力してください！")
     else:
 
       # 4桁なら数字(0~9)かをチェック
@@ -41,7 +25,7 @@ while True:
         if (b[i] < "0") or (b[i] > "9"):
           # 一文字でもアウトなら入力やり直し
           check_int = False
-          print("「数字」で入力してください！")
+          tkm.showinfo("無効", "「数字」で入力してください！")
           break
 
       # 全部クリアで入力ループ脱出
@@ -71,10 +55,38 @@ while True:
         blow += 1
         break
 
-  print(f"ヒット：{hit}")
-  print(f"ブロー：{blow}")
-
   # hitが4ならゲーム終了
   if hit == 4:
-    print ("おめでとう！")
-    break
+    tkm.showinfo("当たり", "おめでとうございます！")
+    root.destroy()
+  else:
+    history.insert(tk.END, f"{b} ヒット：{hit} / ブロー：{blow} \n")
+
+# ///////////////////////   ゲーム部分ここまで   ////////////////////////////
+
+# 4桁の数字のランダム生成
+a = []
+for i in range(4):
+  a.append(random.randint(0, 9))
+
+# GUIの部分
+root = tk.Tk()
+root.geometry("600x400")
+root.title("ヒット＆ブロー")
+label_1 = tk.Label(root, text="4桁の数字を入力してね", font=("helvetica", 14))
+label_1.place(x = 20, y = 20)
+
+input_box = tk.Entry(width = 4, font=("Helvetica", 30))
+input_box.place(x = 40, y = 60)
+
+history = tk.Text(root, font=("Helevtica", 12))
+history.place(x = 400, y = 0, width = 200, height = 400)
+
+# デバッグ用答え表示
+# answer = tk.Text(root)
+# answer.place(x = 10, y = 350)
+# answer.insert(tk.END, a)
+
+button_1 = tk.Button(root, text = "チェック", font=("Helvetica", 14), command = ButtonClick)
+button_1.place(x = 140, y = 80)
+root.mainloop()
