@@ -1,43 +1,56 @@
 import tkinter as tk
 
-# 円を辞書で管理
-circles = [
-  {"x": 400, "y": 300, "one_before": None, "dx": 1, "dy": 1, "color": "red"},
-  {"x": 200, "y": 100, "one_before": None, "dx": -1, "dy": 1, "color": "green"},
-  {"x": 100, "y": 200, "one_before": None, "dx": 1, "dy": -1, "color": "blue"}
-]
+# 円のクラス
+class Circle():
+  # コンストラクタ
+  def __init__(self, x, y, dx, dy, color):
+    self.x = x
+    self.y = y
+    self.dx = dx
+    self.dy = dy
+    self.color = color
+    self.one_before = None
 
-def move():
-  # 関数外から読み込み
-  global circles
+  # 円の移動関数
+  def move(self, canvas):
+  # 円の描画
+    if self.one_before != None:
+      canvas.delete(self.one_before)
 
-  # 各円の描画
-  for circle in circles:
-    if circle["one_before"] != None:
-      canvas.delete(circle["one_before"])
+    self.x = self.x + self.dx
+    self.y = self.y + self.dy
 
-    circle["x"] = circle["x"] + circle["dx"]
-    circle["y"] = circle["y"] + circle["dy"]
-
-    circle["one_before"]= canvas.create_oval(circle["x"] - 20, circle["y"] - 20, circle["x"] + 20, circle["y"] + 20,
-    fill = circle["color"], width = 0)
+    self.one_before = canvas.create_oval(self.x - 20, self.y - 20, self.x + 20, self.y + 20,
+    fill = self.color, width = 0)
  
     # 画面端にたどり着いたら向きを変える仕組み x軸
-    if circle["x"] >= canvas.winfo_width():
-      circle["dx"] = -1
-    elif circle["x"] <= 0:
-      circle["dx"] = 1
+    if self.x >= canvas.winfo_width():
+      self.dx = -1
+    elif self.x <= 0:
+      self.dx = 1
     # 画面端にたどり着いたら向きを変える仕組み y軸
-    if circle["y"] >= canvas.winfo_height():
-      circle["dy"] = -1
-    elif circle["y"] <= 0:
-      circle["dy"] = 1
+    if self.y >= canvas.winfo_height():
+      self.dy = -1
+    elif self.y <= 0:
+      self.dy = 1
 
-  # move関数繰り返し
-  root.after(20, move)
+# 円のインスタンスをリスト管理
+circles = [
+  Circle(400, 300, 1, 1, "red"),
+  Circle(200, 100, -1, 1, "blue"),
+  Circle(300, 200, 1, -1, "green"),
+  Circle(100, 100, -1, -1, "yellow"),
+  Circle(150, 150, 1, -1, "orange"),
+  Circle(400, 400, -1, 1, "#C77EB5")
+]
 
+# ループさせる関数
+def loop():
+  for circle in circles:
+    circle.move(canvas)
 
-  
+  root.after(20, loop)
+
 # ウインドウ作成
 root = tk.Tk()
 root.geometry("600x400")
@@ -46,6 +59,6 @@ root.geometry("600x400")
 canvas = tk.Canvas(root, width = 600, height = 400, bg = "white")
 canvas.place(x = 0, y = 0)
 
-# canvasにクリック時のイベントを定義
-root.after(10, move)
+# canvas作成時のイベントを定義
+root.after(10, loop)
 root.mainloop()
